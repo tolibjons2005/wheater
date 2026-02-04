@@ -37,7 +37,7 @@ function App() {
         <p>Search for a city to see the weather</p>
       </header>
 
-      <CitySearch onCitySelect={handleCitySelect} />
+      <CitySearch onCitySelect={handleCitySelect} selectedCity={selectedCity} />
 
       {loading && <LoadingSpinner />}
 

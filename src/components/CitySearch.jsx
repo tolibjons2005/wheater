@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { searchCities } from '../services/geocodingService';
 
-const CitySearch = ({ onCitySelect }) => {
+const CitySearch = ({ onCitySelect, selectedCity }) => {
   const [query, setQuery] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -46,13 +46,30 @@ const CitySearch = ({ onCitySelect }) => {
     debouncedSearch(query);
   }, [query, debouncedSearch]);
 
+  useEffect(() => {
+    if (selectedCity) {
+      setQuery(selectedCity.name);
+      setSuggestions([]);
+      setShowSuggestions(false);
+    }
+  }, [selectedCity]);
+
   const handleInputChange = (e) => {
     setQuery(e.target.value);
+  };
+
+  const handleSearchClick = () => {
+    if (query.length > 0) {
+      setQuery('');
+      setSuggestions([]);
+      setShowSuggestions(false);
+    }
   };
 
   const handleCitySelect = (city) => {
     setQuery(city.name);
     setShowSuggestions(false);
+    setSuggestions([]);
     onCitySelect(city);
   };
 
@@ -64,7 +81,7 @@ const CitySearch = ({ onCitySelect }) => {
         onChange={handleInputChange}
         placeholder="Search city..."
         className="search-input"
-        onClick={() => setShowSuggestions(suggestions.length > 0)}
+        onClick={handleSearchClick}
       />
       {loading && <span className="search-loading">Searching...</span>}
       {showSuggestions && suggestions.length > 0 && (
